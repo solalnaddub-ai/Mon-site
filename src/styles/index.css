@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   STAYFOCUS — Design tokens (OKLCH, dark + neon)
+   Source of truth: design-system/stayfocus/MASTER.md
+   ============================================================ */
+@layer base {
+  :root {
+    color-scheme: dark;
+
+    /* Surfaces (brief: black base + dark gradients) */
+    --bg: oklch(0% 0 0);
+    --bg-900: oklch(8% 0 0);
+    --bg-800: oklch(13% 0 0);
+    --surface: oklch(16% 0 0);
+    --border: oklch(26% 0 0);
+
+    /* Text */
+    --text: oklch(98% 0 0);
+    --text-muted: oklch(72% 0.01 260);
+
+    /* Neon accents */
+    --gold: oklch(83% 0.16 90);
+    --cyan: oklch(80% 0.14 200);
+    --magenta: oklch(60% 0.24 350);
+    --purple: oklch(65% 0.24 300);
+
+    --ring: var(--cyan);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink text-chalk font-body antialiased;
+    background-color: var(--bg);
+    /* subtle dark gradient with neon tint (brief: dégradés sombres avec teintes subtiles) */
+    background-image:
+      radial-gradient(60rem 60rem at 80% -10%, rgba(168, 85, 247, 0.08), transparent 60%),
+      radial-gradient(50rem 50rem at -10% 110%, rgba(34, 211, 238, 0.07), transparent 60%);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Anton', Impact, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: var(--brutal, -0.02em);
+    line-height: 0.92;
+  }
+
+  /* Visible focus rings — accessibility (Quick Ref §1) */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--cyan);
+    color: #000;
+  }
+}
+
+@layer components {
+  /* Brutalist CTA: hard edges, 2px border, flood-invert on hover */
+  .btn-brutal {
+    @apply relative inline-flex items-center justify-center gap-2 border-2 border-chalk bg-transparent
+           px-7 py-3 font-mono text-sm font-bold uppercase tracking-widest text-chalk
+           transition-colors duration-150 ease-out;
+    min-height: 44px; /* touch target */
+  }
+  .btn-brutal:hover {
+    @apply bg-chalk text-ink;
+  }
+  .btn-brutal--neon {
+    @apply border-neon-cyan text-neon-cyan;
+  }
+  .btn-brutal--neon:hover {
+    @apply bg-neon-cyan text-ink shadow-glow-cyan;
+  }
+
+  /* Hairline grid lines / dividers */
+  .hairline {
+    @apply border-t border-ink-600;
+  }
+
+  .nav-link {
+    @apply relative font-mono text-xs uppercase tracking-widest text-chalk-muted
+           transition-colors duration-150 hover:text-chalk;
+  }
+  .nav-link::after {
+    content: '';
+    @apply absolute -bottom-1 left-0 h-px w-0 bg-neon-cyan transition-all duration-200 ease-out;
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    @apply w-full;
+  }
+
+  /* Scanline overlay for immersive sections */
+  .scanlines::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: overlay;
+  }
+}
+
+@layer utilities {
+  .text-glow-cyan {
+    text-shadow: 0 0 18px rgba(34, 211, 238, 0.45);
+  }
+  .text-glow-gold {
+    text-shadow: 0 0 18px rgba(245, 197, 24, 0.45);
+  }
+  .text-stroke {
+    -webkit-text-stroke: 1.5px var(--text);
+    color: transparent;
+  }
+}
+
+/* ============================================================
+   Reduced motion — accessibility (brief + Quick Ref §1/§7)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
